@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions={
                 password: { label: "Password", type: "password" }
               },
 
-              async   authorize(credentials:any):Promise<any> {
+ async authorize(credentials:any):Promise<any> {
  
                 await dbConnect()
                 try {
@@ -53,9 +53,23 @@ export const authOptions: NextAuthOptions={
     callbacks: {
       
         async session({ session , token }) {
+
+
+            session.user._id=token._id;
+            session.user.isAcceptingMessages=token.isAcceptingMessages;
+            session.user.isVerified=token.isVerified;
+            session.user.username=token.username
           return session
         },
         async jwt({ token, user }) {
+
+            if (user) {
+                token._id=user._id?.toString()
+                token.isVerified=user.isVerified
+                token.username=user.username
+                token.isAcceptingMessages=user.isAcceptingMessages
+            }
+
           return token
         }
    
