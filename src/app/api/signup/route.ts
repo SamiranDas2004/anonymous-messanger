@@ -20,6 +20,7 @@ export async function POST(request:NextRequest) {
     if (existingUserVerifiedByUsername) {
         return NextResponse.json({
             success: false,
+            message:"user is already registered"
         },{status:400})
         
     }
