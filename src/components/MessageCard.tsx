@@ -46,14 +46,13 @@ toast({
 })
 
 onMessageDelete(message._id)
-
 }
 
-
   return (
+    <>
     <Card>
   <CardHeader>
-    <CardTitle>Card Title</CardTitle>
+   
 
 
     <AlertDialog>
@@ -75,15 +74,15 @@ onMessageDelete(message._id)
 
 
 
-    <CardDescription>Card Description</CardDescription>
+    
   </CardHeader>
   <CardContent>
-    <p>Card Content</p>
+    <p>{message.content}</p>
   </CardContent>
  
 
 </Card>
-
+</>
   )
 }
 

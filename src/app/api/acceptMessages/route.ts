@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         success: true,
         message: "user is accepting message",
       },
-      { status: 500 }
+      { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(

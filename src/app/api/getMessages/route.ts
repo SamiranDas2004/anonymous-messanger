@@ -9,10 +9,11 @@ export async function GET(request: Request) {
   await dbConnect();
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User
+console.log(user);
 
   if (!session || !user) {
     return Response.json(
-      { success: false, message: 'Not authenticated' },
+      { success: false, message: 'Not authenticated' },  
       { status: 401 }
     );
   }
@@ -27,8 +28,8 @@ export async function GET(request: Request) {
 
     if (!user || user.length === 0) {
       return Response.json(
-        { message: 'User not found', success: false },
-        { status: 404 }
+        { message: 'No Messasge to Show', success: false },
+        { status: 404 }  
       );
     }
 
