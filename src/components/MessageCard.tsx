@@ -25,9 +25,10 @@ import {
   } from "@/components/ui/alert-dialog"
 import { Message } from '@/model/user'
 import { useToast } from './ui/use-toast'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { Button } from './ui/button'
 import { X } from 'lucide-react'
+import { ApiResponse } from '@/types/ApiResponse'
   
 
 type MessageCardProops={
@@ -41,14 +42,26 @@ function MessageCard({message,onMessageDelete}:MessageCardProops) {
 
 const {toast}=useToast()
 
-const handelDeleteConform=async()=>{
-const response=await axios.delete(`/api/deleteMessage/${message._id}`)
-toast({
-    title:response.data.message
-})
-onMessageDelete(message._id)
-}
+const handleDeleteConfirm = async () => {
+  try {
+    const response = await axios.delete<ApiResponse>(
+      `/api/deleteMessage/${message._id}`
+    );
+    toast({
+      title: response.data.message,
+    });
+    onMessageDelete(message._id);
 
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiResponse>;
+    toast({
+      title: 'Error',
+      description:
+        axiosError.response?.data.message ?? 'Failed to delete message',
+      variant: 'destructive',
+    });
+  } 
+};
 
 
   return (
@@ -75,7 +88,7 @@ onMessageDelete(message._id)
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction onClick={handelDeleteConform}>Continue</AlertDialogAction>
+      <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
