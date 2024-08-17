@@ -40,56 +40,48 @@ const {register,watch,setValue}=form;
 
 const acceptMessages=watch('acceptMessages')
 
-const fetchAcceptMessage=useCallback(async()=>{ 
-setIsSwitchLoading(true)
+const fetchAcceptMessage = useCallback(async () => { 
+  setIsSwitchLoading(true);
 
-try {
-  const response=await axios.get('/api/acceptMessages')
-  setValue('acceptMessages',response.data.isAcceptingMessages)
-} catch (error) {
-  const axiosError=error as AxiosError<ApiResponse>;
-  toast({
-    title:"Error",
-    description:axiosError.response?.data.message ||"Failed to fetch Message settings",
-    variant:"destructive"
-  })
-}
-finally{
-  setIsSwitchLoading(false)
-}
-},[setValue])
-
-
-const fetchMessages = useCallback(
-  async (refresh: boolean = false) => {
-    setIsLoading(true);
+  try {
+    const response = await axios.get('/api/acceptMessages');
+    setValue('acceptMessages', response.data.isAcceptingMessages);
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiResponse>;
+    toast({
+      title: "Error",
+      description: axiosError.response?.data.message || "Failed to fetch Message settings",
+      variant: "destructive"
+    });
+  } finally {
     setIsSwitchLoading(false);
-    try {
-      const response = await axios.get('/api/getMessages');
-      setMessage(response.data.messages || []);
-      console.log("log data",response.data);
-      
-      if (refresh) {
-        toast({
-          title: 'Refreshed Messages',
-          description: 'Showing latest messages',
-        });
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
+  }
+}, [setValue, toast]);
+
+const fetchMessages = useCallback(async (refresh: boolean = false) => {
+  setIsLoading(true);
+  setIsSwitchLoading(false);
+  try {
+    const response = await axios.get('/api/getMessages');
+    setMessage(response.data.messages || []);
+    if (refresh) {
       toast({
-        title: 'Error',
-        description:
-          axiosError.response?.data.message ?? 'Failed to fetch messages',
-        variant: 'destructive',
+        title: 'Refreshed Messages',
+        description: 'Showing latest messages',
       });
-    } finally {
-      setIsLoading(false);
-      setIsSwitchLoading(false);
     }
-  },
-  [setIsLoading, setMessage]
-);
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiResponse>;
+    toast({
+      title: 'Error',
+      description: axiosError.response?.data.message ?? 'Failed to fetch messages',
+      variant: 'destructive',
+    });
+  } finally {
+    setIsLoading(false);
+    setIsSwitchLoading(false);
+  }
+}, [setIsLoading, setMessage, toast]);
 
 useEffect(()=>{
 if (!session || !session.user) return
